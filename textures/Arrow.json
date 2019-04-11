@@ -1,0 +1,45 @@
+{
+  "name": "Arrow",
+  "source": "Missiles.png",
+  "rangeMax": 1000,
+  "velMax": 30,
+  "tiles": [
+    {
+      "offsetX": 809,
+      "offsetY": 116,
+      "width": 34,
+      "height": 30,
+      "nCols": 1,
+      "nRows": 1 
+    },
+    {
+      "offsetX": 845,
+      "offsetY": 116,
+      "width": 114,
+      "height": 30,
+      "nCols": 3,
+      "nRows": 1
+    },
+    {
+      "offsetX": 962,
+      "offsetY": 116,
+      "width": 34,
+      "height": 30,
+      "nCols": 1,
+      "nRows": 1
+    }
+  ],
+  "actions": {
+    "fly": {
+      "nFrames": 1,
+      "timeFrames": [0],
+      "directions": {
+        "N": [0],
+        "NE": [1],
+        "E": [2],
+        "SE": [3],
+        "S": [4]
+      }
+    }
+  }
+}

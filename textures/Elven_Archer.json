@@ -1,0 +1,86 @@
+{
+  "name": "Elven Archer",
+  "source": "Elven_Archer.png",
+  "rpg": {
+    "health": 10,
+    "weapon": {
+      "name": "Bow",
+      "projectile": "Arrow",
+      "shotFrame": 4,
+      "attackMin": 2,
+      "attackMax": 5
+    },
+    "armor": {
+      "name": "Cloak",
+      "block": 1
+    },
+    "speed": 5,
+    "acceleration": 2,
+    "attackDistance": 100,
+    "visionDistance": 300,
+    "collide": [],
+    "effects": [],
+    "spells": []
+  },
+  "tiles": [
+    {
+      "offsetX": 0,
+      "offsetY": 0,
+      "width": 292,
+      "height": 587,
+      "nCols": 5,
+      "nRows": 8
+    },
+    {
+      "offsetX": 9,
+      "offsetY": 576,
+      "width": 53,
+      "height": 56,
+      "nCols": 1,
+      "nRows": 1
+    }
+  ],
+  "actions": {
+    "still": {
+      "nFrames": 1,
+      "timeFrames": [0],
+      "directions": {
+        "N": [0],
+        "NE": [1],
+        "E": [2],
+        "SE": [3],
+        "S": [4]
+      }
+    },
+    "walk": {
+      "nFrames": 4,
+      "timeFrames": [0, 1, 2, 3],
+      "directions": {
+        "N": [5, 10, 15, 20],
+        "NE": [6, 11, 16, 21],
+        "E": [7, 12, 17, 22],
+        "SE": [8, 13, 18, 23],
+        "S": [9, 14, 19, 24]
+      }
+    },
+    "attack": {
+      "nFrames": 5,
+      "timeFrames": [0, 0, 1, 1, 2],
+      "directions": {
+        "N": [0, 25, 30],
+        "NE": [1, 26, 31],
+        "E": [2, 27, 32],
+        "SE": [3, 28, 33],
+        "S": [4, 29, 34]
+      }
+    },
+    "dying": {
+      "nFrames": 16,
+      "timeFrames": [0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+      "directions": {
+        "NE": [35, 37, 39],
+        "SE": [36, 38, 40]
+      }
+    }
+  }
+}
