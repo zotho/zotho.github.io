@@ -8,3 +8,5 @@
 
 * Numbers to select players: 1, 2
 * Select group: 3
+
+#### Work well in Chromium Version 73
