@@ -3,12 +3,11 @@ let canvas;
 let canvasWidth = 600,
     canvasHeight = 600;
 
-let texture;
-
 let char;
+let icons;
+
 let frameCount = 0;
 
-let time = 0;
 let fr = 60;
 let dt = 0;
 let fDt = 0;
@@ -17,27 +16,29 @@ let newTime = 0;
 let fFrames = 0;
 let nFrames = 0;
 
+let players = [];
+let currPlayers = [];
+
+
 function setup() {
   canvasWidth = windowWidth;
   canvasHeight = windowHeight;
   canvas = createCanvas(canvasWidth, canvasHeight).canvas;
-  smooth();
+
+  icons = loadImage('textures/icons.png');
 
   char = new TileCharacter('Elven_Archer');
-  player = new Player('Elven_Archer', width/2, height/2);
-
-  player2 = new Player('Death_Knight', width/2, height/2);
-
-  // frameRate(4);
-  // noLoop();
-  // time = millis();
+  
+  players.push({id:0, key: 49, group:51, player:new Player('Elven_Archer', width/2-100, height/2)});
+  players.push({id:1, key: 50, group:51, player:new Player('Death_Knight', width/2+100, height/2)});
+  currPlayers = [players[0]];
 }
 
 function draw() {
   background(255);
 
-  let x = 500,
-      y = 10;
+  // let x = 500,
+  //     y = 10;
 
   // rect(x-10, y-10, 500, 500);
 
@@ -65,13 +66,13 @@ function draw() {
 
   if (mouseIsPressed) {
     if (mouseButton === LEFT) {
-      player2.nextAim = createVector(mouseX, mouseY);
+      currPlayers.forEach((player) => {player.player.nextAim = createVector(mouseX, mouseY)});
     }
     if (mouseButton === RIGHT) {
-      player2.nextTarget = createVector(mouseX, mouseY);
+      currPlayers.forEach((player) => {player.player.nextTarget = createVector(mouseX, mouseY)});
     }
     if (mouseButton === CENTER) {
-      player2.rpg.health = 0;
+      currPlayers.forEach((player) => {player.player.rpg.health = 0});
     }
   }
 
@@ -82,25 +83,83 @@ function draw() {
   dt = 1000 / (fr || 1);
   fDt = dt/frameTime;
   fFrames += fDt;
-  player2.update(fFrames, fDt);
+
+  // Update all players
+  for (let i = 0; i < players.length; i++) {
+    players[i].player.update(fFrames, fDt);
+  }
+
   fFrames = fFrames%1;
-  player2.draw();
-
-  // time = millis();
-
-  // circle((100+time/10)%500, 100, 50);
-  // point((100+time/10)%500, player.pos.y);
-  // line((100+time/10)%500, pfFrames, (100+time/10)%500, fFrames);
-
   frameCount += nFrames;
+
+  // Sort for draw far players first
+  players.sort((a,b) => {
+    if (a.player.pos.y < b.player.pos.y) {
+      return -1;
+    }
+    if (a.player.pos.y > b.player.pos.y) {
+      return 1;
+    }
+    return 0;
+  })
+
+  // Draw all players
+  for (let i = 0; i < players.length; i++) {
+    players[i].player.draw();
+  }
+
+  const pad = 20;
+  push();
+  
+  const first = currPlayers.some(p => p.id == 0);
+  const second = currPlayers.some(p => p.id == 1);
+  
+  strokeWeight(14 - 5*first);
+  stroke(0, 0, 200 * first);
+  rect(pad, pad, icons.width, icons.height*2);
+  
+  strokeWeight(14 - 5*second);
+  stroke(200 * second, 0, 0);
+  rect(pad*2+icons.width, pad, icons.width, icons.height*2);
+
+  let rpg = players.find(p => p.id == 0).player.rpg;
+  if (rpg && rpg.health <= 0) {
+    let img = createImage(icons.width, icons.height);
+    img.copy(icons, 0, 0, icons.width, icons.height, 0, 0, icons.width, icons.height);
+    img.filter(GRAY);
+    image(img, pad, pad, icons.width, icons.height*2, 0, 0, icons.width/2, icons.height);
+  } else {
+    image(icons, pad, pad, icons.width, icons.height*2, 0, 0, icons.width/2, icons.height);
+  }
+
+  rpg = players.find(p => p.id == 1).player.rpg;
+  if (rpg && rpg.health <= 0) {
+    let img = createImage(icons.width, icons.height);
+    img.copy(icons, 0, 0, icons.width, icons.height, 0, 0, icons.width, icons.height);
+    img.filter(GRAY);
+    image(img, 
+      pad*2 + icons.width,  pad, 
+      icons.width,          icons.height*2, 
+      icons.width/2,        0, 
+      icons.width/2,        icons.height);
+  } else {
+    image(icons, 
+      pad*2 + icons.width,  pad, 
+      icons.width,          icons.height*2, 
+      icons.width/2,        0, 
+      icons.width/2,        icons.height);
+  }
+
+  pop();
+
 }
 
 function mouseDragged(event) {
   // console.log(event);
   if (event.which == 1) {
-    player2.nextAim = createVector(event.x, event.y);
+    currPlayers.forEach((player) => {player.player.nextAim = createVector(event.x, event.y)});
   } else if (event.which == 3) {
-    player2.nextTarget = createVector(event.x, event.y);
+    currPlayers.forEach((player) => {player.player.nextTarget = createVector(event.x, event.y)});
     // console.log(player.target);
   }
   return false;
@@ -114,9 +173,9 @@ function mouseReleased(event) {
 function mousePressed(event) {
   // console.log(event);
   if (event.which == 1) {
-    player2.nextAim = createVector(event.x, event.y);
+    currPlayers.forEach((player) => {player.player.nextAim = createVector(event.x, event.y)});
   } else if (event.which == 3) {
-    player2.nextTarget = createVector(event.x, event.y);
+    currPlayers.forEach((player) => {player.player.nextTarget = createVector(event.x, event.y)});
     // console.log(player.target);
   }
   return false;
@@ -124,4 +183,22 @@ function mousePressed(event) {
 
 function mouseClicked(event) {
   return false;
+}
+
+function keyPressed() {
+  for (let i = 0; i < players.length; i++) {
+    if (players[i].key == keyCode) {
+      currPlayers = [players[i]];
+      return false; // prevent default
+    }
+  }
+  let currGroup = [];
+  for (let i = 0; i < players.length; i++) {
+    if (players[i].group == keyCode) {
+      currGroup.push(players[i]);
+    }
+  }
+  if (currGroup.length) {
+    currPlayers = currGroup;
+  }
 }

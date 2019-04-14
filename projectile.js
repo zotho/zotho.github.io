@@ -33,7 +33,7 @@ class Projectile {
     this.rangeMax = result.texture_json.rangeMax;
     this.velMax = result.texture_json.velMax;
     if (result.texture_json.acc) {
-      this.acc = createVector(result.texture_json.acc);
+      this.acc = createVector(...result.texture_json.acc);
     }
     if (result.texture_json.flyFriction !== undefined) {
       this.flyFriction = result.texture_json.flyFriction;

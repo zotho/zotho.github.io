@@ -3,7 +3,7 @@
   "source": "Missiles.png",
   "rangeMax": 1000,
   "velMax": 300,
-  "acc": [0, 30],
+  "acc": [5, 30],
   "flyFriction": 0.5,
   "tiles": [
     {
