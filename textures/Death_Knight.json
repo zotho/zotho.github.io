@@ -34,9 +34,9 @@
     {
       "offsetX": 0,
       "offsetY": 321,
-      "width": 292,
+      "width": 365,
       "height": 61,
-      "nCols": 4,
+      "nCols": 5,
       "nRows": 1
     }
   ],
@@ -75,11 +75,11 @@
       }
     },
     "dying": {
-      "nFrames": 4,
-      "timeFrames": [0, 1, 2, 3],
+      "nFrames": 5,
+      "timeFrames": [0, 1, 2, 3, 4],
       "directions": {
-        "NE": [45, 46, 47, 48],
-        "SE": [45, 46, 47, 48]
+        "NE": [45, 46, 47, 48, 49],
+        "SE": [45, 46, 47, 48, 49]
       }
     }
   }
