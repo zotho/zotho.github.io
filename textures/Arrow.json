@@ -2,7 +2,9 @@
   "name": "Arrow",
   "source": "Missiles.png",
   "rangeMax": 1000,
-  "velMax": 30,
+  "velMax": 300,
+  "acc": [0, 30],
+  "flyFriction": 0.5,
   "tiles": [
     {
       "offsetX": 809,

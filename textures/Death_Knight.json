@@ -1,0 +1,86 @@
+{
+  "name": "Death Knight",
+  "source": "Death_Knight.png",
+  "rpg": {
+    "health": 10,
+    "weapon": {
+      "name": "Staff",
+      "projectile": "Ring_of_souls",
+      "shotFrame": 4,
+      "attackMin": 2,
+      "attackMax": 5
+    },
+    "armor": {
+      "name": "Cloak",
+      "block": 1
+    },
+    "speed": 30,
+    "acceleration": 10,
+    "attackDistance": 100,
+    "visionDistance": 300,
+    "collide": [],
+    "effects": [],
+    "spells": []
+  },
+  "tiles": [
+    {
+      "offsetX": 0,
+      "offsetY": 0,
+      "width": 594,
+      "height": 320,
+      "nCols": 9,
+      "nRows": 5
+    },
+    {
+      "offsetX": 0,
+      "offsetY": 321,
+      "width": 292,
+      "height": 61,
+      "nCols": 4,
+      "nRows": 1
+    }
+  ],
+  "actions": {
+    "still": {
+      "nFrames": 1,
+      "timeFrames": [0],
+      "directions": {
+        "N": [0],
+        "NE": [9],
+        "E": [18],
+        "SE": [27],
+        "S": [36]
+      }
+    },
+    "walk": {
+      "nFrames": 4,
+      "timeFrames": [0, 1, 2, 3],
+      "directions": {
+        "N": [1, 2, 3, 4],
+        "NE": [10, 11, 12, 13],
+        "E": [19, 20, 21, 22],
+        "SE": [28, 29, 30, 31],
+        "S": [37, 38, 39, 40]
+      }
+    },
+    "attack": {
+      "nFrames": 5,
+      "timeFrames": [0, 1, 2, 3, 4],
+      "directions": {
+        "N": [0, 5, 6, 7, 7],
+        "NE": [9, 14, 15, 16, 17],
+        "E": [18, 23, 24, 25, 26],
+        "SE": [27, 32, 33, 34, 35],
+        "S": [36, 41, 42, 43, 44]
+      }
+    },
+    "dying": {
+      "nFrames": 4,
+      "timeFrames": [0, 1, 2, 3],
+      "directions": {
+        "NE": [45, 46, 47, 48],
+        "SE": [45, 46, 47, 48]
+      }
+    }
+  }
+}

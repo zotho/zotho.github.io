@@ -8,7 +8,7 @@ class Player {
     this.pos = createVector(x, y);
     this.vel = createVector();
     this.acc = createVector();
-    this.standFriction = 0.3;
+    this.standFriction = 0.2;
     this.walkFriction = 0.9;
 
     this.availableDirs = ["N","NE","E","SE","S","SW","W","NW"];
@@ -21,7 +21,8 @@ class Player {
 
     this.target = null;
     this.nextTarget = null;
-    this.targetRadius = 10;
+    this.targetRadius = 20;
+    this.stoppingRadius = 150;
 
     // triggers for FSM https://en.wikipedia.org/wiki/Finite-state_machine
     this.stateTriggers = new Set();
@@ -47,8 +48,7 @@ class Player {
           this.projectiles[i].vel = createVector();
           this.projectiles[i].tiles.loading.then(
             result => {
-                this.projectiles[i].rangeMax = result.texture_json.rangeMax;
-                this.projectiles[i].velMax = result.texture_json.velMax;
+              this.projectiles[i].onTileLoaded(result);
             },
             error => {
               console.error(error);
@@ -62,16 +62,17 @@ class Player {
     );
   }
 
-  update(dt) {
+  update(frames, dt) {
+    // FIXME
     if (!this.actions) {
       return;
     }
 
     for (let i = 0; i < this.projectiles.length; i++) {
-      this.projectiles[i].update(dt)
+      this.projectiles[i].update(frames, dt)
     }
 
-    let nFrames = Math.floor(dt);
+    let nFrames = Math.floor(frames);
     if (nFrames > 0) {
       this.frame += nFrames;
 
@@ -81,18 +82,33 @@ class Player {
 
     this.vel.add(p5.Vector.mult(this.acc, dt));
     this.vel.limit(this.rpg.speed);
-    this.pos.add(p5.Vector.mult(this.vel, dt));
-    this.acc.set();
+    if (["still", "attack", "dying"].indexOf(this.action) != -1) {
+      this.vel.mult(map(dt, 0, 1, 1, this.standFriction));
+      if (this.vel.mag() < 0.01) {
+        this.vel.set();
+      }
+    } else if (this.action == "walk") {
+      let vTan = createVector(this.acc.x, this.acc.y);
+      vTan.mult(cos(vTan.angleBetween(this.vel) | 0) * this.vel.mag() / this.acc.mag());
+      let vNorm = p5.Vector.sub(this.vel, vTan);
 
-    // console.log(this.vel.mag(), this.acc.mag(), this.action);
+      vTan.mult(map(dt, 0, 1, 1, this.walkFriction));
+      vNorm.mult(map(dt, 0, 1, 1, this.standFriction));
+      this.vel.set(p5.Vector.add(vTan, vNorm));
+    }
+    this.pos.add(p5.Vector.mult(this.vel, dt));
+    // this.acc.set();
+
+    // console.log(nf(this.vel.mag(),0, 3), nf(this.acc.mag(), 0, 3), this.action);
   }
 
   draw() {
     if (this.actions) {
-      this.tiles.draw(this.pos.x, this.pos.y, this.action, this.dir, this.frame, this.action == "dying");
       for (let i = 0; i < this.projectiles.length; i++) {
         this.projectiles[i].draw();
       }
+
+      this.tiles.draw(this.pos.x, this.pos.y, this.action, this.dir, this.frame, this.action == "dying");
     }
   }
 
@@ -202,6 +218,7 @@ class Player {
       this.frame = 0;
     }
 
+    this.acc.set();
     if (this.action == "still") {
       if (this.frame>this.stillDirLastTime+this.stillDirTime) {
         this.dir = random(this.availableDirs);
@@ -209,10 +226,12 @@ class Player {
       }
 
     } else if (this.action == "walk") {
+      this.stillDirLastTime = 0;
       this.diff = p5.Vector.sub(this.target, this.pos);
       this.acc.set(this.diff);
       if (this.diff.mag() > this.targetRadius) {
-        this.acc.setMag(this.rpg.acceleration);
+        this.acc.setMag(map(this.diff.mag(), this.targetRadius, this.stoppingRadius, 0.0001, this.rpg.acceleration));
+        this.acc.limit(this.rpg.acceleration);
       } else {
         this.acc.setMag(0.0001);
         this.frame = 0;
@@ -220,6 +239,7 @@ class Player {
       this.dir = this.availableDirs[this.angle8(this.diff)];
 
     } else if (this.action == "attack") {
+      this.stillDirLastTime = 0;
       this.diff = p5.Vector.sub(this.aim, this.pos);
       this.dir = this.availableDirs[this.angle8(this.diff)];
       if (this.frame % this.actions.attack.nFrames == this.rpg.weapon.shotFrame) {
@@ -241,23 +261,11 @@ class Player {
       }
 
     } else if (this.action == "dying") {
+      this.stillDirLastTime = 0;
       this.dir = this.availableDirs[this.angle4(this.diff)];
 
     }
 
-    if (["still", "attack", "dying"].indexOf(this.action) != -1) {
-      this.vel.mult(this.standFriction);
-      if (this.vel.mag() < 0.01) {
-        this.vel.set();
-      }
-    } else if (this.action == "walk") {
-      let vTan = createVector(this.acc.x, this.acc.y);
-      vTan.mult(cos(vTan.angleBetween(this.vel) | 0) * this.vel.mag() / this.acc.mag());
-      let vNorm = p5.Vector.sub(this.vel, vTan);
-
-      vTan.mult(this.walkFriction);
-      vNorm.mult(this.standFriction);
-      this.vel.set(p5.Vector.add(vTan, vNorm));
-    }
+    
   }
 }

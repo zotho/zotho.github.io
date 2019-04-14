@@ -14,8 +14,8 @@
       "name": "Cloak",
       "block": 1
     },
-    "speed": 5,
-    "acceleration": 2,
+    "speed": 50,
+    "acceleration": 10,
     "attackDistance": 100,
     "visionDistance": 300,
     "collide": [],

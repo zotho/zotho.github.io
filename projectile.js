@@ -7,7 +7,8 @@ class Projectile {
 
     this.pos = createVector();
     this.vel = createVector();
-    this.flyFriction = 0.95;
+    this.acc = null;
+    this.flyFriction = null;
 
     this.availableDirs = ["N","NE","E","SE","S","SW","W","NW"];
     this.dir = "N";
@@ -15,17 +16,28 @@ class Projectile {
     this.range = 0;
     this.alive = false;
 
-    this.action = "fly";
+    this.action = null;
 
     this.tiles.loading.then(
       result => {
-          this.rangeMax = result.texture_json.rangeMax;
-          this.velMax = result.texture_json.velMax;
+        this.onTileLoaded(result)
       },
       error => {
         console.error(error);
       }
     );
+  }
+
+  onTileLoaded(result) {
+    this.action = Object.keys(result.texture_json.actions)[0];
+    this.rangeMax = result.texture_json.rangeMax;
+    this.velMax = result.texture_json.velMax;
+    if (result.texture_json.acc) {
+      this.acc = createVector(result.texture_json.acc);
+    }
+    if (result.texture_json.flyFriction !== undefined) {
+      this.flyFriction = result.texture_json.flyFriction;
+    }
   }
 
   reset(x, y, vx, vy) {
@@ -41,13 +53,20 @@ class Projectile {
     return clone;
   }
 
-  update(dt) {
-    let nFrames = Math.floor(dt);
-    if (this.alive) {
+  update(frames, dt) {
+    let nFrames = Math.floor(frames);
+    if (this.alive && this.action) {
       this.frame += nFrames;
-      this.vel.mult(map(dt, 0, 1, 1, this.flyFriction));
+      
+      if (this.flyFriction) {
+        this.vel.mult(map(dt, 0, 1, 1, this.flyFriction));
+      }
+        
       // Gravity
-      this.vel.add(p5.Vector.mult(createVector(0, 0.5), dt))
+      if (this.acc) {
+        this.vel.add(p5.Vector.mult(this.acc, dt))
+      }
+      
       let dPos = p5.Vector.mult(this.vel, dt);
       this.pos.add(dPos);
       this.dir = this.availableDirs[this.angle8(this.vel)]
@@ -81,4 +100,6 @@ class Projectile {
     }
     return angle * 2 + 1;
   }
+
+  
 }

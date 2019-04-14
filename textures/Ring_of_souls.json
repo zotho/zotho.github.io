@@ -1,0 +1,48 @@
+{
+  "name": "Ring of souls",
+  "source": "Death_Knight.png",
+  "rangeMax": 1000,
+  "velMax": 100,
+  "tiles": [
+    {
+      "offsetX": 478,
+      "offsetY": 329,
+      "width": 115,
+      "height": 24,
+      "nCols": 5,
+      "nRows": 1
+    },
+    {
+      "offsetX": 438,
+      "offsetY": 354,
+      "width": 155,
+      "height": 26,
+      "nCols": 5,
+      "nRows": 1 
+    }
+  ],
+  "actions": {
+    "fly": {
+      "nFrames": 1,
+      "timeFrames": [0],
+      "directions": {
+        "N": [0],
+        "NE": [1],
+        "E": [2],
+        "SE": [3],
+        "S": [4]
+      }
+    },
+    "hit": {
+      "nFrames": 5,
+      "timeFrames": [0, 1, 2, 3, 4],
+      "directions": {
+        "N": [5, 6, 7, 8, 9],
+        "NE": [5, 6, 7, 8, 9],
+        "E": [5, 6, 7, 8, 9],
+        "SE": [5, 6, 7, 8, 9],
+        "S": [5, 6, 7, 8, 9]
+      }
+    }
+  }
+}

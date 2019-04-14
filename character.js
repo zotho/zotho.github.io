@@ -17,7 +17,7 @@ class TileCharacter {
     this.texture_json = await ( (s) => new Promise((resolve) => {
       let json = loadJSON(s, () => {resolve(json)});
     }))(src);
-    console.log('json done');
+    console.log('json done: ' + this.texture_json_src);
     this.jsonDone = true;
 
     this.texture_src = this.texture_json.source;
@@ -46,7 +46,7 @@ class TileCharacter {
     }
 
     this.texture = await promise;
-    console.log('image done');
+    console.log('image done: ' + this.texture_src);
     this.imgDone = true;
     return this;
   }
