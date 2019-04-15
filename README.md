@@ -1,0 +1,12 @@
+# zotho.github.io
+
+[See it](https://zotho.github.io/)
+
+1. Left - fire
+2. Middle - health.set(0)
+3. Right - move
+
+* Numbers to select players: 1, 2
+* Select group: 3
+
+#### Work well in Chromium Version 73
