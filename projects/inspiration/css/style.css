@@ -1,0 +1,151 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: sans-serif;
+}
+
+.bricklayer {
+  width: 100%;
+  margin: 10px 0px;
+}
+
+/*@media screen and (min-width: 1200px) {
+  .bricklayer-column-sizer {
+     divide by 3. 
+    width: 25%;
+  }
+  img{
+    width: 100%;
+    padding: 7px 0;
+  }
+}*/
+
+@media only screen and (min-width: 1224px) {
+  .bricklayer-column-sizer {
+    /*Each column will be 100px width and there will be 5 columns. */
+    width: 33.33%;
+  }
+  img{
+    width: 100%;
+    /*padding: 5px 0px;*/
+  }
+}
+
+@media screen and (max-width: 1224px) {
+  .bricklayer-column-sizer {
+    /*Each column will be 100px width and there will be 5 columns. */
+    width: 100%;
+  }
+  img{
+    width: 100%;
+    padding: 0px 0px;
+  }
+}
+
+.box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: rgba(255, 255, 255, .6);
+  margin-bottom: 10px;
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+}
+
+.grid-img {
+  display: flex;
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+}
+
+.box.is-append {
+  -webkit-animation-name: animAppend, animFade;
+  animation-name: animAppend, animFade;
+}
+
+.box.is-prepend {
+  -webkit-animation-name: animPrepend, animFade;
+  animation-name: animPrepend, animFade;
+}
+
+@-webkit-keyframes animAppend {
+  from {
+    -webkit-transform: translateY(20px);
+    transform: translateY(20px);
+  }
+  to {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes animAppend {
+  from {
+    -webkit-transform: translateY(20px);
+    transform: translateY(20px);
+  }
+  to {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+@-webkit-keyframes animPrepend {
+  from {
+    -webkit-transform: translateY(-20px);
+    transform: translateY(-20px);
+  }
+  to {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes animPrepend {
+  from {
+    -webkit-transform: translateY(-20px);
+    transform: translateY(-20px);
+  }
+  to {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+@-webkit-keyframes animFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes animFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/*.buttons {
+  z-index: 1;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 20px 30px;
+  background-color: black;
+}
+
+.buttons button {
+  background-color: white;
+  color: black;
+  border: 0;
+  padding: 5px 10px;
+}*/
