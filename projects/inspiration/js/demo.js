@@ -9,12 +9,10 @@ function newBox() {
   return box;
 }
 
-function newImg(name) {
+function simpleBox() {
   var box = document.createElement('div');
   box.className = 'box';
-  var image = new Image();
-  image.src = "img/"+name;
-  return [box, image];
+  return box;
 }
 
 var bricklayer = new Bricklayer(document.querySelector('.bricklayer'))
@@ -46,20 +44,6 @@ var buttons = document.querySelectorAll("button");
 function goToScroll(value) {
   document.body.scrollTop = value;
 }
-
-imgs = ["image-1.jpg",
-        "image-2.jpg",
-        "image-3.jpg",
-        "image-4.jpg",
-        "image-5.jpg",
-        "image-6.jpg",
-        "image-7.jpg",
-        "image-8.jpg",
-        "image-9.jpg",
-        "image-10.jpg",
-        "image-11.gif",
-        "image-12.gif",
-        "image-13.jpg"]
 
 Array.prototype.slice.call(buttons).forEach(function (button) {
   button.addEventListener('click', function (e) {
@@ -96,21 +80,61 @@ Array.prototype.slice.call(buttons).forEach(function (button) {
 });
 
 function nextBrick() {
-  if (imgs.length) {
-    var name = imgs.shift();
-    var [box, img] = newImg(name);
-    img.onload = function () {
-      img.classList.add('img-responsive');
-      box.appendChild(img);
-      bricklayer.append(box);
-      goToScroll(document.body.scrollHeight);
-      setTimeout(nextBrick, 100);
-      // nextBrick();
-    }
+  if (img_names.length) {
+    var name = img_names.shift();
+    console.log(name);
+    var box = simpleBox();
+    console.log("box");
+    var img = imgs[name];
+    var p = pimgs[name];
+    console.log(img);
+    p.then(
+      result => {
+        console.log("done");
+        img.classList.add('img-responsive');
+        box.appendChild(img);
+        bricklayer.append(box);
+        goToScroll(document.body.scrollHeight);
+        setTimeout(nextBrick, 100);
+      }
+    )
+    // img.onload = function () {
+    //   console.log("done");
+    //   img.classList.add('img-responsive');
+    //   box.appendChild(img);
+    //   bricklayer.append(box);
+    //   goToScroll(document.body.scrollHeight);
+    //   setTimeout(nextBrick, 100);
+    //   // nextBrick();
+    // }
     // bricklayer.appendLazyElement(function (done) {
     // })
     // goToScroll(document.body.scrollHeight);
   }
+}
+
+img_names = [ "image-1.jpg",
+              "image-2.jpg",
+              "image-3.jpg",
+              "image-4.jpg",
+              "image-5.jpg",
+              "image-6.jpg",
+              "image-7.jpg",
+              "image-8.jpg",
+              "image-9.jpg",
+              "image-10.jpg",
+              "image-11.gif",
+              "image-12.gif",
+              "image-13.jpg"]
+
+imgs = {}
+pimgs = {}
+
+for (let name of img_names) {
+  var img = new Image();
+  img.src = "img/"+name;
+  imgs[name] = img;
+  pimgs[name] = new Promise((resolve) => img.onload = resolve);
 }
 
 nextBrick();
