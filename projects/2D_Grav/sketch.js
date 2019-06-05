@@ -8,7 +8,7 @@ let space;
 
 let dt;
 let time = 0;
-let multDt = 0.01;
+let multDt = 0.1;
 let nFrames = 10;
 const fixedDt = 0.0001;
 let error;
