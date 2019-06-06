@@ -2,6 +2,17 @@ html, body {
   margin: 0;
   padding: 0;
 }
+#settingsDiv {
+  height: 30px;
+  line-height: 30px;
+  justify-content: center;
+  padding: 10px;
+}
+.settings {
+  margin: 2px;
+  font-family: monospace;
+  white-space: pre;
+}
 canvas {
   display: block;
 }

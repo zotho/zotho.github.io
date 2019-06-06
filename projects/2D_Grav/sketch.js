@@ -17,36 +17,38 @@ let error;
 const initIVX = 965;
 let dIVX = -1;
 let iVx = initIVX;
+
+let graphShow = true;
 let graph;
 let results = [];
 
+let markersShow = true;
 let markers;
 let canv;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  
+  const divSpeed = createDiv().id('settingsDiv');
+  divSpeed.elt.setAttribute('style','display:flex;');
+  const fSpeedToText = ()=>'Speed: '+nf(multDt, 2, 4);
+  const d0 = createDiv(fSpeedToText()).id('speedText');
+  const fMultSpeed = (n)=>{multDt *= n; document.getElementById('speedText').textContent = fSpeedToText()};
+  const b0 = createButton('x1/2').id('double').mousePressed(()=>fMultSpeed(1/2));
+  const b1 = createButton('  x2').id('half')  .mousePressed(()=>fMultSpeed(2));
+  const fChangeImpulse = ()=>{
+    markersShow = !markersShow;
+    document.getElementById('impulse').textContent=(markersShow?'Hide Impulse':'Show Impulse');
+  }
+  const b2 = createButton('Hide Impulse').id('impulse').mousePressed(fChangeImpulse);
+  const all = [d0, b0, b1, b2];
+  all.forEach((e)=>{e.class('settings')});
+  divSpeed.elt.append(...all.map(e=>e.elt));
+
+  createCanvas(windowWidth, windowHeight - divSpeed.elt.scrollHeight);
   canv = createGraphics(windowWidth, windowHeight);
   graph = createGraphics(windowWidth, windowHeight);
-  graph.loadPixels();
-  for (let i = 0; i < graph.width; ++i) {
-    for (let j = 0; j < graph.height; ++j) {
-      graph.set(i, j, color(255, 0));
-    }  
-  }
-  graph.updatePixels();
   markers = createGraphics(windowWidth, windowHeight);
-  markers.loadPixels();
-  for (let i = 0; i < markers.width; ++i) {
-    for (let j = 0; j < markers.height; ++j) {
-      markers.set(i, j, color(255, 0));
-    }  
-  }
-  markers.updatePixels();
   space = new Space();
   reset();
-  // space.addParticle(100, 100, 0, 0, pow(10, 3), options);
-  // space.addParticle(-100, -100, 0, 0, pow(10, 3), options);
   // space.addRandomGaussianField( 1000, 0, 100, 0, 100, 0, 10, 0, 10, pow(10, 9), pow(10, 10) );
   space.initImpulse();
   space.addRectWalls({
@@ -80,9 +82,8 @@ function draw() {
   canv.translate(width / 2 - space.target.x, height / 2 - space.target.y);
   canv.background(255, 2);
   space.draw(canv);
-  // resetMatrix();
   markers.resetMatrix();
-  markers.translate(width / 2 - space.target.x, height / 2 -space.target.y);
+  markers.translate(width / 2 - space.target.x, height / 2 - space.target.y);
   markers.clear();
   space.drawImpulse(markers);
   space.drawError(markers);
@@ -91,9 +92,10 @@ function draw() {
     updateGraph();
     reset();
   }
+  clear();
   image(canv, 0, 0);
-  // image(markers, 0, 0);
-  image(graph, 0, 0);
+  if (markersShow) image(markers, 0, 0);
+  if (graphShow) image(graph, 0, 0);
   // text("Time: " + nf(time / 3600, 0, 5) + " hours", 10, 10);
 }
 
@@ -106,8 +108,8 @@ function reset() {
   space.addParticle(0, 0, -1000, -300, pow(10, 4), options);
   options.color = color(0, 0, 255);
   space.addParticle(0, -10, -150, -300, pow(10, 2), options);
-  options.color = color(0, 0, 0);
-  space.addParticle(0, 120, iVx, -30, pow(10, 1), options);
+  // options.color = color(0, 0, 0);
+  // space.addParticle(0, 120, iVx, -30, pow(10, 1), options);
   space.initImpulse();
   if (space.targetOptions) {
     space.setTarget(Object.assign(space.targetOptions, {'needClear':false}));

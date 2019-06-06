@@ -232,11 +232,11 @@ class Space {
           l.clear();
         }
       }
-      background(255);
+      clear();
     }
     if (options.impulse) {
       this.target = this;
-    } else if (options.index) {
+    } else if (options.index !== undefined) {
       this.target = (this.particles[options.index] || this.target);
     }
     this.targetOptions = Object.assign({}, options);
@@ -246,14 +246,14 @@ class Space {
     this.particles.push( new Particle(x, y, vx, vy, m, Object.assign({}, options) ) );
   }
 
-  addRandomGaussianField(count, x, dx, y, dy, vx, dvx, vy, dvy, m, dm) {
+  addRandomGaussianField(count, x, dx, y, dy, vx, dvx, vy, dvy, m, dm, options) {
     for (let i = 0; i < count; ++i) {
       this.addParticle(randomGaussian(x, dx),
                        randomGaussian(y, dy),
                        randomGaussian(vx, dvx),
                        randomGaussian(vy, dvy),
                        randomGaussian(m, dm),
-                       {'m':m, 'dm':dm}
+                       Object.assign((options || {}), {'m':m, 'dm':dm}),
                       );
     }
   }
