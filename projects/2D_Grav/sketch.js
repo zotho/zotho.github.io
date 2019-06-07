@@ -39,7 +39,9 @@ function setup() {
     document.getElementById('impulse').textContent=(markersShow?'Hide Impulse':'Show Impulse');
   }
   const b2 = createButton('Hide Impulse').id('impulse').mousePressed(fChangeImpulse);
-  const all = [d0, b0, b1, b2];
+  const b3 = createButton('Restart').id('restart').mousePressed(reset);
+  // const b4 = createButton('Restart').id('restart').mousePressed(reset);
+  const all = [d0, b0, b1, b2, b3];
   all.forEach((e)=>{e.class('settings')});
   divSpeed.elt.append(...all.map(e=>e.elt));
 
@@ -49,15 +51,14 @@ function setup() {
   markers = createGraphics(windowWidth, windowHeight);
   space = new Space();
   reset();
-  // space.addRandomGaussianField( 1000, 0, 100, 0, 100, 0, 10, 0, 10, pow(10, 9), pow(10, 10) );
   space.initImpulse();
   space.addRectWalls({
     // 'type': 'teleport',
     'type': 'bounce',
-    'left': -300,
-    'right': 300,
-    'top': -300,
-    'bottom': 300,
+    'left': -3000,
+    'right': 3000,
+    'top': -3000,
+    'bottom': 3000,
     'r': 0.1,
   });
   // space.setTarget({'impulse':true});
@@ -69,39 +70,42 @@ function draw() {
   time += floor(nFrames) * fixedDt;
 
   // Updating
+  canv.resetMatrix();
+  canv.translate(width / 2 - space.target.x, height / 2 - space.target.y);
+  canv.background(255, 2);
   for (let i = 0; i < nFrames; ++i) {
     space.updateAcc(fixedDt);
     space.updateVel(fixedDt);
     space.updatePos(fixedDt);
     space.updateWalls();
   }
-  space.countImpulse();
-
-  // Drawing
-  canv.resetMatrix();
-  canv.translate(width / 2 - space.target.x, height / 2 - space.target.y);
-  canv.background(255, 2);
   space.draw(canv);
-  markers.resetMatrix();
-  markers.translate(width / 2 - space.target.x, height / 2 - space.target.y);
-  markers.clear();
-  space.drawImpulse(markers);
-  space.drawError(markers);
+
+  space.countImpulse();
   space.countError();
-  if (space.error.vn > 0.01) {
+  if (space.error.vn > 0.1) {
     updateGraph();
     reset();
   }
   clear();
   image(canv, 0, 0);
-  if (markersShow) image(markers, 0, 0);
+  if (markersShow) {
+  	markers.resetMatrix();
+  	markers.translate(width / 2 - space.target.x, height / 2 - space.target.y);
+  	markers.clear();
+  	space.drawImpulse(markers);
+  	space.drawError(markers);
+  	image(markers, 0, 0);
+  };
   if (graphShow) image(graph, 0, 0);
   // text("Time: " + nf(time / 3600, 0, 5) + " hours", 10, 10);
 }
 
 function reset() {
-  const avg = (pow(10, 2) + pow(10, 5)) / 2;
-  const options = {'m':avg, 'dm':avg-pow(10, 1)};
+  const minMass = pow(10, -3);
+  const maxMass = pow(10, 5);
+  const avg = (minMass + maxMass) / 2;
+  const options = {'m':avg, 'dm':avg-minMass};
   options.color = color(255, 0, 0);
   space.addParticle(0, 60, 100, 30, pow(10, 5), options);
   options.color = color(0, 255, 0);
@@ -110,6 +114,7 @@ function reset() {
   space.addParticle(0, -10, -150, -300, pow(10, 2), options);
   // options.color = color(0, 0, 0);
   // space.addParticle(0, 120, iVx, -30, pow(10, 1), options);
+  space.addRandomGaussianField( 100, 0, 200, 0, 200, 0, 1000, 0, 1000, pow(10, -2), pow(10, -2), {'drop':true, 'm':options.m, 'dm':options.dm} );
   space.initImpulse();
   if (space.targetOptions) {
     space.setTarget(Object.assign(space.targetOptions, {'needClear':false}));

@@ -20,6 +20,12 @@ class Space {
     this.targetOptions = {
       'needClear':false,
     };
+
+    this.lim = 0;
+    this.limC = 100;
+    this.hitWalls = false;
+
+    this.needDelete = false;
   }
 
   updatePos(dt) {
@@ -46,12 +52,25 @@ class Space {
         mult = this.G / pow(dist, 3);
         ax = dx * mult;
         ay = dy * mult;
-        p0.ax += ax * p1.m;
-        p0.ay += ay * p1.m;
-        p1.ax -= ax * p0.m;
-        p1.ay -= ay * p0.m;
+        this.lim = sqrt(sq(ax) + sq(ay));
+        if (this.lim>100) console.log(this.lim);
+        if ((dist < 10) && (p0.options.drop || p1.options.drop)) {
+          // console.log(i0, i1);
+          if (p0.options.drop) {
+            p0.toDelete = true;
+          } else {
+            p1.toDelete = true;
+          }
+          this.needDelete = true;
+        } else {
+          p0.ax += ax * p1.m;
+          p0.ay += ay * p1.m;
+          p1.ax -= ax * p0.m;
+          p1.ay -= ay * p0.m;
+        }
       }
     }
+    if (this.needDelete) this.updateDeletion();
   }
 
   updateWalls() {
@@ -61,18 +80,22 @@ class Space {
           if (p.x < this.walls.left) {
             p.x = this.walls.left + (this.walls.left - p.x);
             p.vx *= -this.walls.r;
+            p.toDelete = true;
           }
           if (p.x > this.walls.right) {
             p.x = this.walls.right - (p.x - this.walls.right);
             p.vx *= -this.walls.r;
+            p.toDelete = true;
           }
           if (p.y < this.walls.top) {
             p.y = this.walls.top + (this.walls.top - p.y);
             p.vy *= -this.walls.r;
+            p.toDelete = true;
           }
           if (p.y > this.walls.bottom) {
             p.y = this.walls.bottom - (p.y - this.walls.bottom);
             p.vy *= -this.walls.r;
+            p.toDelete = true;
           }
         }
       } else if (this.walls.type == 'teleport') {
@@ -102,7 +125,7 @@ class Space {
     for (let p of this.particles) {
       p.draw(layer);
     }
-  }
+  }options
 
   drawImpulse(layer) {
     if (layer) {
@@ -183,6 +206,7 @@ class Space {
       this.vn = 0;
       this.m = 0;
       for (let p of this.particles) {
+        if (p.options.drop) continue;
         this.x += p.x * p.m;
         this.y += p.y * p.m;
         this.vx += p.vx * p.m;
@@ -211,6 +235,10 @@ class Space {
     this.error.vy = this.vy - this.initStat.vy;
     this.error.vn = sqrt(sq(this.error.vx) + sq(this.error.vy));
     this.error.m = this.m - this.initStat.m;
+  }
+
+  updateDeletion() {
+    this.particles = this.particles.reduce((a,c)=>{if(!c.toDelete){a.push(c)};return a},[]);
   }
 
   initImpulse() {
@@ -253,7 +281,7 @@ class Space {
                        randomGaussian(vx, dvx),
                        randomGaussian(vy, dvy),
                        randomGaussian(m, dm),
-                       Object.assign((options || {}), {'m':m, 'dm':dm}),
+                       Object.assign({'m':m, 'dm':dm}, (options || {})),
                       );
     }
   }

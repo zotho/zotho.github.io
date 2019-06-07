@@ -18,7 +18,8 @@ class Particle {
     this.limC = 10000000;
     this.lim = 0;
     // this.trail = [this.pos.copy()];
-    // this.stopped = false;
+    
+    this.toDelete = false;
   }
 
   updatePos(dt) {
