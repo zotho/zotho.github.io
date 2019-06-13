@@ -6,11 +6,14 @@ class Particle {
     this.vy = vy;
     this.ax = 0;
     this.ay = 0;
-    this.m = m;
+    this.m = 0;
+    this.r = 1;
 
     this.options = (options || {'m':m, 'dm':1});
     this.om = this.options.m;
     this.odm = this.options.dm;
+
+    this.changeMass(m);
 
     // vars for save memory
     this.limAR = 1;
@@ -20,6 +23,11 @@ class Particle {
     // this.trail = [this.pos.copy()];
     
     this.toDelete = false;
+  }
+
+  changeMass(m) {
+    this.m = m;
+    this.r = pow(map(this.m, this.om - this.odm, this.om + this.odm, 1, 216), 1/3);
   }
 
   updatePos(dt) {
@@ -44,13 +52,27 @@ class Particle {
   }
 
   draw(layer) {
-    if (layer) {
-      layer.stroke(this.options.color || color(255, 0, 0));
-      layer.circle(this.x, this.y, pow(map(this.m, this.om - this.odm, this.om + this.odm, 1, 216), 1/3) );
+    layer.stroke(this.options.color || color(255, 0, 0));
+    if (this.r > 1.01) {
+      layer.circle(this.x, this.y, this.r);
     } else {
-      stroke(this.options.color || color(255, 0, 0));
-      circle(this.x, this.y, pow(map(this.m, this.om - this.odm, this.om + this.odm, 1, 216), 1/3) );
+      layer.point(this.x, this.y);
     }
+    // if (layer) {
+    //   layer.stroke(this.options.color || color(255, 0, 0));
+    //   if (this.r > 1.01) {
+    //     layer.circle(this.x, this.y, this.r);
+    //   } else {
+    //     layer.point(this.x, this.y);
+    //   }
+    // } else {
+    //   stroke(this.options.color || color(255, 0, 0));
+    //   if (this.r > 1.01) {
+    //     circle(this.x, this.y, this.r);
+    //   } else {
+    //     point(this.x, this.y);
+    //   }
+    // }
     // noFill();
     // beginShape();
     // for (const v of this.trail) {

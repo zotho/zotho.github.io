@@ -26,6 +26,29 @@ class Space {
     this.hitWalls = false;
 
     this.needDelete = false;
+
+    this.nTimes = 0;
+    this.nTimesSaved = 0;
+    this.nTimesFloor = 0;
+
+    this.backgroundAlpha = 1;
+    this.backgroundLimit = 0.8;
+  }
+
+  async update(dt) {
+    this.updateAcc(dt);
+    this.updateVel(dt);
+    this.updatePos(dt);
+    this.updateWalls();
+  }
+
+  async updateNTimes(nTimes, dt) {
+    this.nTimes = nTimes + this.nTimesSaved;
+    this.nTimesFloor = floor(this.nTimes);
+    this.nTimesSaved = this.nTimes - this.nTimesFloor;
+    for (let i = 0; i < this.nTimesFloor; ++i) {
+      this.update(dt);
+    }
   }
 
   updatePos(dt) {
@@ -53,7 +76,7 @@ class Space {
         ax = dx * mult;
         ay = dy * mult;
         this.lim = sqrt(sq(ax) + sq(ay));
-        if (this.lim>100) console.log(this.lim);
+        // if (this.lim>100) console.log(this.lim);
         if ((dist < 10) && (p0.options.drop || p1.options.drop)) {
           // console.log(i0, i1);
           if (p0.options.drop) {
@@ -121,11 +144,18 @@ class Space {
     }
   }
 
-  draw(layer) {
+  draw(layer, background, nFrames) {
+    if (background) {
+      this.backgroundAlpha *= pow((100-1)/100, nFrames);
+      if (this.backgroundAlpha < this.backgroundLimit) {
+        layer.background(255, 100-100*this.backgroundAlpha);
+        this.backgroundAlpha = 1;
+      }
+    }
     for (let p of this.particles) {
       p.draw(layer);
     }
-  }options
+  }
 
   drawImpulse(layer) {
     if (layer) {
