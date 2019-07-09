@@ -2,7 +2,7 @@
 
 **_[Demo](https://zotho.github.io/projects/inspiration/)_**
 
-[![Demo](img/image-10.jpg)](https://zotho.github.io/projects/inspiration/)
+[![Demo](img/image-10_min.jpg)](https://zotho.github.io/projects/inspiration/)
 
 ## Used
 * [Bricklayer](https://github.com/ademilter/bricklayer) - Lightweight and Independent Pinterest-like Cascading Grid Layout Library
