@@ -43,6 +43,9 @@ let capturer = new CCapture( {
       // verbose: true
     } );
 
+let progressP;
+
+// Set false to off record
 const record = true;
 
 function setup() {
@@ -52,7 +55,6 @@ function setup() {
 
   sett = new settings();
   gui = new dat.GUI();
-  // gui.add(sett, 'cellSize',1,100).onChange(settingsChanged);
   gui.add(sett, 'increment',0.0001,1, 0.0001).onChange(settingsChanged);
   gui.add(sett, 'offsetX',-10.5,20.5, 0.01).onChange(settingsChanged);
   gui.add(sett, 'offsetY',-10.5,20.5, 0.01).onChange(settingsChanged);
@@ -61,6 +63,8 @@ function setup() {
 
   updateTexture();
   drawTexture();
+
+  progressP = createP('Record don\'t started').style('font-size', '24px');
 
   if (record) capturer.start();
 }
@@ -76,13 +80,17 @@ function draw() {
     // note that canvas animations don't run in the background
     // you will have to keep the window open to record
     capturer.capture(canvas);
+
+    progressP.html('Record progress ' + nf(counter * 100 / totalFrames, 3, 1) + '%');
   }
   else if (record) {
+    progressP.html('Downloading record');
+
     capturer.stop();
-    capturer.save();
-    // this will download a tar archive with the pngs inside
+    // this will download a tar archive with the PNGs inside
     // extract with 7zip or a similar tool
     // then use ffmpeg to convert into a gif or video
+    capturer.save();
     noLoop();
   }
   counter++;
@@ -102,6 +110,7 @@ function updateTexture() {
 
   function calcExpCoords(x, y, d) {
     // Exp lens
+
     const left = 1;
     const rd = sqrt(sq(x) + sq(y)) / d;
     const mult = exp(left * (rd - (left - 1))) / exp(left * (0 - (left - 1)));
