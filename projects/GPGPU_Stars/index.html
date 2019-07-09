@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang="en"><head>
+        <title>Gravity gpgpu</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <style>
+            body {
+                background-color: #000000;
+                margin: 0px;
+                overflow: hidden;
+                font-family:Monospace;
+                font-size:13px;
+                text-align:center;
+                /*text-align:center;*/
+                cursor: pointer;
+            }
+
+            a {
+                color:#0078ff;
+            }
+
+            #info {
+                color: #ffffff;
+                position: absolute;
+                top: 10px;
+                width: 100%;
+            }
+
+            #warning {
+                color: #ff0000;
+            }
+
+        </style>
+    </head>
+    <body>
+
+        <div id="info">
+            <a href="http://threejs.org" target="_blank" rel="noopener">three.js</a> - <span id="protoplanets"></span> webgl gpgpu debris<br>
+            Select <span id="options"></span> debris<br>
+            <span id="warning"></span>
+        </div>
+
+        <script src="js/libs/three.min.js"></script>
+        <script src="js/libs/WebGL.js"></script>
+        <script src="js/libs/stats.min.js"></script>
+        <script src="js/libs/dat.gui.min.js"></script>
+        <script src="js/libs/OrbitControls.js"></script>
+        <script src="js/libs/GPUComputationRenderer.js"></script>
+
+        <script src="js/stars.js"></script>
+
+    
+
+</body></html>
