@@ -359,7 +359,7 @@ function dynamicValuesChanger() {
 function initGUI() {
 
     var gui = new dat.GUI();
-    gui.close();
+    // gui.close();
 
     var folder1 = gui.addFolder( 'Dynamic parameters' );
 
